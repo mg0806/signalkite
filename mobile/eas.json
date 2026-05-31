@@ -15,7 +15,7 @@
         "simulator": false
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://YOUR_RENDER_API_URL"
+        "EXPO_PUBLIC_API_URL": "https://signalkite-api.onrender.com"
       }
     },
     "simulator": {
@@ -23,7 +23,7 @@
         "simulator": true
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://YOUR_RENDER_API_URL"
+        "EXPO_PUBLIC_API_URL": "https://signalkite-api.onrender.com"
       }
     },
     "production": {
@@ -34,7 +34,7 @@
         "simulator": false
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://YOUR_RENDER_API_URL"
+        "EXPO_PUBLIC_API_URL": "https://signalkite-api.onrender.com"
       }
     }
   }
