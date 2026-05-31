@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "SignalKite",
+    "slug": "signalkite",
+    "scheme": "signalkite",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.signalkite.app",
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "processing"
+        ],
+        "BGTaskSchedulerPermittedIdentifiers": [
+          "com.expo.modules.backgroundtask.processing"
+        ]
+      }
+    },
+    "android": {
+      "package": "com.signalkite.app",
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.WAKE_LOCK"
+      ],
+      "adaptiveIcon": {
+        "backgroundColor": "#151615"
+      }
+    },
+    "plugins": [
+      "expo-background-task",
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "dcd46120-1df7-4dc6-b473-949026e8fd04"
+      }
+    }
+  }
+}
