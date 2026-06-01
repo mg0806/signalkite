@@ -21,7 +21,7 @@ export type SignalType = "BUY" | "SELL" | "HOLD";
 
 export async function getPortfolio() {
   try {
-    const response = await api.get("/portfolio");
+    const response = await api.get("/portfolio", { params: { t: Date.now() } });
     return response.data;
   } catch {
     return portfolioMock;
