@@ -20,6 +20,10 @@ api.interceptors.request.use(async (config) => {
 export type SignalType = "BUY" | "SELL" | "HOLD";
 
 export async function getPortfolio() {
+  const token = await getAccessToken();
+  if (!token) {
+    return portfolioMock;
+  }
   try {
     const response = await api.get("/portfolio", { params: { t: Date.now() } });
     return response.data;

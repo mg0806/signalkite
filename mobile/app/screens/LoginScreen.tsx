@@ -54,8 +54,8 @@ export default function LoginScreen({ navigation }: Props) {
           return;
         }
         const status = await fetchKiteStatus();
-        if (mounted && status.kite_connected) {
-          navigation.replace("Main");
+        if (mounted && !status.kite_configured) {
+          setCheckingConnection(false);
           return;
         }
       } catch {
@@ -80,10 +80,6 @@ export default function LoginScreen({ navigation }: Props) {
     setCheckingConnection(true);
     try {
       const status = await fetchKiteStatus();
-      if (status.kite_connected) {
-        navigation.replace("Main");
-        return;
-      }
       if (!status.kite_configured) {
         Alert.alert(
           "Kite login is not configured",
