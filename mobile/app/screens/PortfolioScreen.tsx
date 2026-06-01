@@ -38,6 +38,12 @@ function refreshStatusLabel(summary: any) {
   if (summary.refresh_status === "live") {
     return `Live quotes ${stats?.quote_count ?? ""}/${stats?.holdings_count ?? ""}`;
   }
+  if (summary.refresh_status === "upstox_stream") {
+    return `Upstox stream ${stats?.quote_count ?? 0}/${stats?.holdings_count ?? 0}`;
+  }
+  if (summary.refresh_status === "upstox_stream_starting") {
+    return `Upstox stream starting ${stats?.quote_count ?? 0}/${stats?.holdings_count ?? 0}${summary.refresh_error ? `: ${summary.refresh_error}` : ""}`;
+  }
   if (summary.refresh_status === "partial_live") {
     return `Partial live quotes ${stats?.quote_count ?? 0}/${stats?.holdings_count ?? 0}`;
   }
@@ -48,10 +54,10 @@ function refreshStatusLabel(summary: any) {
 }
 
 function refreshStatusColor(status?: string) {
-  if (status === "live") {
+  if (status === "live" || status === "upstox_stream") {
     return "#73c441";
   }
-  if (status === "partial_live" || status === "holdings_snapshot") {
+  if (status === "partial_live" || status === "holdings_snapshot" || status === "upstox_stream_starting") {
     return "#f0d56b";
   }
   return "#ff7064";
