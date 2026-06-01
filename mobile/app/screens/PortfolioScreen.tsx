@@ -23,7 +23,31 @@ export default function PortfolioScreen({ navigation }: Props) {
   const { selectedSymbol, setSelectedSymbol } = usePortfolioStore();
 
   useEffect(() => {
-    getPortfolio().then(setData);
+    let mounted = true;
+    let loading = false;
+
+    async function refreshPortfolio() {
+      if (loading) {
+        return;
+      }
+      loading = true;
+      try {
+        const portfolio = await getPortfolio();
+        if (mounted) {
+          setData(portfolio);
+        }
+      } finally {
+        loading = false;
+      }
+    }
+
+    refreshPortfolio();
+    const intervalId = setInterval(refreshPortfolio, 3000);
+
+    return () => {
+      mounted = false;
+      clearInterval(intervalId);
+    };
   }, []);
 
   if (!data) {
@@ -88,7 +112,12 @@ export default function PortfolioScreen({ navigation }: Props) {
                 <SparklineChart values={holding.sparkline?.length ? holding.sparkline : [1, 2, 1]} color={holding.pnl >= 0 ? "#73c441" : "#ff7064"} />
               </View>
               <View style={{ width: 110, flexShrink: 0, alignItems: "flex-end" }}>
+                <Text numberOfLines={1} style={{ color: "#8f9288", fontSize: 11, fontWeight: "800" }}>Current</Text>
                 <Text numberOfLines={1} style={{ color: "#fffdf5", fontSize: 15, fontWeight: "900" }}>{rupee.format(holding.last_price)}</Text>
+                <Text numberOfLines={1} style={{ color: "#8f9288", fontSize: 11, fontWeight: "800", marginTop: 4 }}>Target</Text>
+                <Text numberOfLines={1} style={{ color: "#f0d56b", fontSize: 14, fontWeight: "900" }}>
+                  {holding.target_price ? rupee.format(holding.target_price) : "--"}
+                </Text>
                 <Text numberOfLines={1} style={{ color: holding.pnl >= 0 ? "#73c441" : "#ff7064", fontWeight: "800" }}>
                   {holding.pnl >= 0 ? "+" : ""}{rupee.format(holding.pnl)}
                 </Text>

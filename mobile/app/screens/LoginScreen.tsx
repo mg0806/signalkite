@@ -10,6 +10,17 @@ import { apiBaseUrl } from "../services/config";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
+async function fetchKiteStatus() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
+  try {
+    const response = await fetch(`${apiBaseUrl()}/auth/kite/status`, { signal: controller.signal });
+    return response.json();
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 export default function LoginScreen({ navigation }: Props) {
   const loginUrl = `${apiBaseUrl()}/auth/kite/login`;
   const [checkingConnection, setCheckingConnection] = useState(true);
@@ -42,8 +53,7 @@ export default function LoginScreen({ navigation }: Props) {
           navigation.replace("Main");
           return;
         }
-        const response = await fetch(`${apiBaseUrl()}/auth/kite/status`);
-        const status = await response.json();
+        const status = await fetchKiteStatus();
         if (mounted && status.kite_connected) {
           navigation.replace("Main");
           return;
@@ -67,9 +77,9 @@ export default function LoginScreen({ navigation }: Props) {
   }, [navigation]);
 
   async function connectWithZerodha() {
+    setCheckingConnection(true);
     try {
-      const response = await fetch(`${apiBaseUrl()}/auth/kite/status`);
-      const status = await response.json();
+      const status = await fetchKiteStatus();
       if (status.kite_connected) {
         navigation.replace("Main");
         return;
@@ -88,6 +98,7 @@ export default function LoginScreen({ navigation }: Props) {
         `Start FastAPI on ${apiBaseUrl()} or use the sample portfolio preview.`
       );
     }
+    setCheckingConnection(false);
   }
 
   return (

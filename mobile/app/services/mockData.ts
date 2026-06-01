@@ -12,6 +12,7 @@ export const portfolioMock = {
       quantity: 50,
       average_price: 2410,
       last_price: 2538,
+      target_price: 2710,
       pnl: 6400,
       sparkline: [2510, 2522, 2515, 2531, 2528, 2542, 2538],
       signal: { type: "BUY", confidence: "HIGH", rsi: 32, reason: "RSI oversold, MACD bullish crossover" }
@@ -21,6 +22,7 @@ export const portfolioMock = {
       quantity: 30,
       average_price: 1580,
       last_price: 1742,
+      target_price: 1685,
       pnl: 4860,
       sparkline: [1690, 1710, 1728, 1736, 1742, 1730, 1718],
       signal: { type: "SELL", confidence: "LOW", rsi: 68, reason: "RSI overbought" }
@@ -30,6 +32,7 @@ export const portfolioMock = {
       quantity: 20,
       average_price: 3820,
       last_price: 3910,
+      target_price: 4050,
       pnl: 1800,
       sparkline: [3905, 3912, 3906, 3915, 3910, 3914, 3910],
       signal: { type: "HOLD", confidence: "LOW", rsi: 51, reason: "mixed or neutral indicator readings" }
@@ -39,6 +42,7 @@ export const portfolioMock = {
       quantity: 25,
       average_price: 1620,
       last_price: 1548,
+      target_price: 1642,
       pnl: -1800,
       sparkline: [1578, 1560, 1545, 1532, 1540, 1536, 1548],
       signal: { type: "BUY", confidence: "HIGH", rsi: 28, reason: "RSI oversold, price at lower Bollinger Band" }
