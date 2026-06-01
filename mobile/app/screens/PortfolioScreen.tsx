@@ -16,9 +16,14 @@ import { usePortfolioStore } from "../store/portfolioStore";
 type Props = CompositeScreenProps<BottomTabScreenProps<TabsParamList, "Portfolio">, NativeStackScreenProps<RootStackParamList>>;
 
 const rupee = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
+const rupeePrecise = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 2 });
 
 function signedRupee(value: number) {
   return `${value >= 0 ? "+" : ""}${rupee.format(value)}`;
+}
+
+function signedRupeePrecise(value: number) {
+  return `${value >= 0 ? "+" : ""}${rupeePrecise.format(value)}`;
 }
 
 function timeLabel(value?: string) {
@@ -31,6 +36,7 @@ function timeLabel(value?: string) {
 export default function PortfolioScreen({ navigation }: Props) {
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [data, setData] = useState<any>();
+  const [checkedAt, setCheckedAt] = useState<Date>();
   const { selectedSymbol, setSelectedSymbol } = usePortfolioStore();
 
   useEffect(() => {
@@ -46,6 +52,7 @@ export default function PortfolioScreen({ navigation }: Props) {
         const portfolio = await getPortfolio();
         if (mounted) {
           setData(portfolio);
+          setCheckedAt(new Date());
         }
       } catch (error) {
         if (error instanceof AuthenticationRequiredError && mounted) {
@@ -84,16 +91,19 @@ export default function PortfolioScreen({ navigation }: Props) {
           <View style={{ alignItems: "flex-end" }}>
             <Text style={{ color: "#d8d8ce", fontWeight: "700" }}>Today's P&L</Text>
             <Text style={{ color: data.summary.today_pnl >= 0 ? "#73c441" : "#ff7064", fontSize: 18, fontWeight: "900" }}>
-              {signedRupee(data.summary.today_pnl)}
+              {signedRupeePrecise(data.summary.today_pnl)}
             </Text>
             <Text style={{ color: "#8f9288", fontSize: 11, fontWeight: "800", marginTop: 4 }}>
               Updated {timeLabel(data.summary.last_updated)}
+            </Text>
+            <Text style={{ color: "#8f9288", fontSize: 11, fontWeight: "800", marginTop: 2 }}>
+              Checked {checkedAt ? checkedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "--"}
             </Text>
           </View>
         </View>
         <View style={{ flexDirection: "row", gap: 8, marginTop: 14 }}>
           {[
-            ["Overall gain", signedRupee(data.summary.overall_gain)],
+            ["Overall gain", signedRupeePrecise(data.summary.overall_gain)],
             ["XIRR", data.summary.xirr ? `${data.summary.xirr}%` : "--"],
             ["Signals today", `${data.summary.active_signals} active`]
           ].map(([label, value]) => (
@@ -133,13 +143,13 @@ export default function PortfolioScreen({ navigation }: Props) {
               </View>
               <View style={{ width: 110, flexShrink: 0, alignItems: "flex-end" }}>
                 <Text numberOfLines={1} style={{ color: "#8f9288", fontSize: 11, fontWeight: "800" }}>Current</Text>
-                <Text numberOfLines={1} style={{ color: "#fffdf5", fontSize: 15, fontWeight: "900" }}>{rupee.format(holding.last_price)}</Text>
+                <Text numberOfLines={1} style={{ color: "#fffdf5", fontSize: 15, fontWeight: "900" }}>{rupeePrecise.format(holding.last_price)}</Text>
                 <Text numberOfLines={1} style={{ color: "#8f9288", fontSize: 11, fontWeight: "800", marginTop: 4 }}>Target</Text>
                 <Text numberOfLines={1} style={{ color: "#f0d56b", fontSize: 14, fontWeight: "900" }}>
-                  {holding.target_price ? rupee.format(holding.target_price) : "--"}
+                  {holding.target_price ? rupeePrecise.format(holding.target_price) : "--"}
                 </Text>
                 <Text numberOfLines={1} style={{ color: holding.pnl >= 0 ? "#73c441" : "#ff7064", fontWeight: "800" }}>
-                  {holding.pnl >= 0 ? "+" : ""}{rupee.format(holding.pnl)}
+                  {signedRupeePrecise(holding.pnl)}
                 </Text>
                 <SignalPill type={holding.signal?.type ?? "HOLD"} confidence={holding.signal?.confidence} />
               </View>
