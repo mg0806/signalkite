@@ -1,4 +1,4 @@
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme, createNavigationContainerRef } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Bell, BriefcaseBusiness, LineChart, ListFilter, ShieldCheck, TrendingUp } from "lucide-react-native";
@@ -32,6 +32,7 @@ export type TabsParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator<TabsParamList>();
+const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 const theme = {
   ...DefaultTheme,
@@ -101,15 +102,18 @@ export default function App() {
       {
         text: "Logout",
         style: "destructive",
-        onPress: () => {
-          logoutSession().catch(() => undefined);
+        onPress: async () => {
+          await logoutSession().catch(() => undefined);
+          if (navigationRef.isReady()) {
+            navigationRef.reset({ index: 0, routes: [{ name: "Login" }] });
+          }
         }
       }
     ]);
   }
 
   return (
-    <NavigationContainer theme={theme}>
+    <NavigationContainer ref={navigationRef} theme={theme}>
       <StatusBar style="light" />
       <Stack.Navigator
         initialRouteName="Login"

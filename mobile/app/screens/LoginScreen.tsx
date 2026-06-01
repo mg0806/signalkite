@@ -114,7 +114,7 @@ export default function LoginScreen({ navigation }: Props) {
         <ShieldCheck color="#73c441" size={44} />
         <Text style={{ color: "#f7f4ea", fontSize: 36, fontWeight: "900", marginTop: 18 }}>SignalKite</Text>
         <Text style={{ color: "#c8cabd", fontSize: 16, lineHeight: 24, marginTop: 8 }}>
-          A read-only signal layer for your Zerodha Kite portfolio.
+          A read-only signal layer for your Zerodha Kite or Upstox portfolio.
         </Text>
         <Text style={{ color: "#8f9288", fontSize: 12, lineHeight: 18, marginTop: 14 }}>
           Research and alerts only. Not investment advice. Verify every trade and risk before placing orders.
