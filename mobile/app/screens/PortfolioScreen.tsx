@@ -33,6 +33,30 @@ function timeLabel(value?: string) {
   return new Date(value).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 }
 
+function refreshStatusLabel(summary: any) {
+  const stats = summary.refresh_stats;
+  if (summary.refresh_status === "live") {
+    return `Live quotes ${stats?.quote_count ?? ""}/${stats?.holdings_count ?? ""}`;
+  }
+  if (summary.refresh_status === "partial_live") {
+    return `Partial live quotes ${stats?.quote_count ?? 0}/${stats?.holdings_count ?? 0}`;
+  }
+  if (summary.refresh_status === "holdings_snapshot") {
+    return "Kite holdings snapshot";
+  }
+  return `Stale data${summary.refresh_error ? `: ${summary.refresh_error}` : ""}`;
+}
+
+function refreshStatusColor(status?: string) {
+  if (status === "live") {
+    return "#73c441";
+  }
+  if (status === "partial_live" || status === "holdings_snapshot") {
+    return "#f0d56b";
+  }
+  return "#ff7064";
+}
+
 export default function PortfolioScreen({ navigation }: Props) {
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [data, setData] = useState<any>();
@@ -102,14 +126,14 @@ export default function PortfolioScreen({ navigation }: Props) {
             <Text
               numberOfLines={1}
               style={{
-                color: data.summary.refresh_status === "live" ? "#73c441" : "#ff7064",
+                color: refreshStatusColor(data.summary.refresh_status),
                 fontSize: 11,
                 fontWeight: "900",
                 marginTop: 2,
                 maxWidth: 220
               }}
             >
-              {data.summary.refresh_status === "live" ? "Live Kite data" : `Stale data${data.summary.refresh_error ? `: ${data.summary.refresh_error}` : ""}`}
+              {refreshStatusLabel(data.summary)}
             </Text>
           </View>
         </View>
