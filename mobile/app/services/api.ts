@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { getAccessToken } from "./auth";
+import { clearAccessToken, getAccessToken } from "./auth";
 import { apiBaseUrl } from "./config";
 import { portfolioMock, topPicksMock } from "./mockData";
 
@@ -19,6 +19,13 @@ api.interceptors.request.use(async (config) => {
 
 export type SignalType = "BUY" | "SELL" | "HOLD";
 
+export class AuthenticationRequiredError extends Error {
+  constructor() {
+    super("Authentication required");
+    this.name = "AuthenticationRequiredError";
+  }
+}
+
 export async function getPortfolio() {
   const token = await getAccessToken();
   if (!token) {
@@ -27,7 +34,11 @@ export async function getPortfolio() {
   try {
     const response = await api.get("/portfolio", { params: { t: Date.now() } });
     return response.data;
-  } catch {
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      await clearAccessToken();
+      throw new AuthenticationRequiredError();
+    }
     return portfolioMock;
   }
 }

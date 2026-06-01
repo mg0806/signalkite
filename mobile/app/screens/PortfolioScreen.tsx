@@ -10,7 +10,7 @@ import IndicatorTag from "../components/IndicatorTag";
 import Screen from "../components/Screen";
 import SignalPill from "../components/SignalPill";
 import SparklineChart from "../components/SparklineChart";
-import { getPortfolio } from "../services/api";
+import { AuthenticationRequiredError, getPortfolio } from "../services/api";
 import { usePortfolioStore } from "../store/portfolioStore";
 
 type Props = CompositeScreenProps<BottomTabScreenProps<TabsParamList, "Portfolio">, NativeStackScreenProps<RootStackParamList>>;
@@ -46,6 +46,10 @@ export default function PortfolioScreen({ navigation }: Props) {
         const portfolio = await getPortfolio();
         if (mounted) {
           setData(portfolio);
+        }
+      } catch (error) {
+        if (error instanceof AuthenticationRequiredError && mounted) {
+          rootNav.replace("Login");
         }
       } finally {
         loading = false;
