@@ -23,6 +23,7 @@ async function fetchKiteStatus() {
 
 export default function LoginScreen({ navigation }: Props) {
   const loginUrl = `${apiBaseUrl()}/auth/kite/login`;
+  const upstoxLoginUrl = `${apiBaseUrl()}/auth/upstox/login`;
   const [checkingConnection, setCheckingConnection] = useState(true);
 
   useEffect(() => {
@@ -97,6 +98,16 @@ export default function LoginScreen({ navigation }: Props) {
     setCheckingConnection(false);
   }
 
+  async function connectWithUpstox() {
+    setCheckingConnection(true);
+    try {
+      await Linking.openURL(upstoxLoginUrl);
+    } catch {
+      Alert.alert("Backend is not reachable", `Start FastAPI on ${apiBaseUrl()} or use the sample portfolio preview.`);
+    }
+    setCheckingConnection(false);
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: "#151615", padding: 24, justifyContent: "center" }}>
       <View style={{ marginBottom: 40 }}>
@@ -117,6 +128,13 @@ export default function LoginScreen({ navigation }: Props) {
         <Text style={{ color: "#10210f", fontWeight: "900", fontSize: 16 }}>
           {checkingConnection ? "Checking Zerodha..." : "Connect with Zerodha"}
         </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={connectWithUpstox}
+        disabled={checkingConnection}
+        style={{ borderColor: "#73c441", borderWidth: 1, borderRadius: 8, paddingVertical: 14, alignItems: "center", marginTop: 12 }}
+      >
+        <Text style={{ color: "#73c441", fontWeight: "900" }}>Connect with Upstox</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => navigation.replace("Main")}
