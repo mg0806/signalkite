@@ -42,7 +42,7 @@ function refreshStatusLabel(summary: any) {
     return `Partial live quotes ${stats?.quote_count ?? 0}/${stats?.holdings_count ?? 0}`;
   }
   if (summary.refresh_status === "holdings_snapshot") {
-    return "Kite holdings snapshot";
+    return `Kite holdings snapshot${summary.refresh_error ? `: ${summary.refresh_error}` : ""}`;
   }
   return `Stale data${summary.refresh_error ? `: ${summary.refresh_error}` : ""}`;
 }
