@@ -17,6 +17,17 @@ type Props = CompositeScreenProps<BottomTabScreenProps<TabsParamList, "Portfolio
 
 const rupee = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
 
+function signedRupee(value: number) {
+  return `${value >= 0 ? "+" : ""}${rupee.format(value)}`;
+}
+
+function timeLabel(value?: string) {
+  if (!value) {
+    return "--";
+  }
+  return new Date(value).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+
 export default function PortfolioScreen({ navigation }: Props) {
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [data, setData] = useState<any>();
@@ -68,12 +79,17 @@ export default function PortfolioScreen({ navigation }: Props) {
           </View>
           <View style={{ alignItems: "flex-end" }}>
             <Text style={{ color: "#d8d8ce", fontWeight: "700" }}>Today's P&L</Text>
-            <Text style={{ color: "#73c441", fontSize: 18, fontWeight: "900" }}>+{rupee.format(data.summary.today_pnl)}</Text>
+            <Text style={{ color: data.summary.today_pnl >= 0 ? "#73c441" : "#ff7064", fontSize: 18, fontWeight: "900" }}>
+              {signedRupee(data.summary.today_pnl)}
+            </Text>
+            <Text style={{ color: "#8f9288", fontSize: 11, fontWeight: "800", marginTop: 4 }}>
+              Updated {timeLabel(data.summary.last_updated)}
+            </Text>
           </View>
         </View>
         <View style={{ flexDirection: "row", gap: 8, marginTop: 14 }}>
           {[
-            ["Overall gain", rupee.format(data.summary.overall_gain)],
+            ["Overall gain", signedRupee(data.summary.overall_gain)],
             ["XIRR", data.summary.xirr ? `${data.summary.xirr}%` : "--"],
             ["Signals today", `${data.summary.active_signals} active`]
           ].map(([label, value]) => (
