@@ -99,6 +99,18 @@ export default function PortfolioScreen({ navigation }: Props) {
             <Text style={{ color: "#8f9288", fontSize: 11, fontWeight: "800", marginTop: 2 }}>
               Checked {checkedAt ? checkedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "--"}
             </Text>
+            <Text
+              numberOfLines={1}
+              style={{
+                color: data.summary.refresh_status === "live" ? "#73c441" : "#ff7064",
+                fontSize: 11,
+                fontWeight: "900",
+                marginTop: 2,
+                maxWidth: 220
+              }}
+            >
+              {data.summary.refresh_status === "live" ? "Live Kite data" : `Stale data${data.summary.refresh_error ? `: ${data.summary.refresh_error}` : ""}`}
+            </Text>
           </View>
         </View>
         <View style={{ flexDirection: "row", gap: 8, marginTop: 14 }}>
